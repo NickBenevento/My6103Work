@@ -127,7 +127,9 @@ print(nparray2c is nparray2)
 # between the pairs of arrays/lists: [1e10,1e-8] and [1.00001e10,1e-9]
 # between the pairs of arrays/lists: [1e10,1e-8] and [1.0001e10,1e-9]
 # Try just google what function to use to test numpy arrays within a tolerance.
-
+print(np.allclose([1e10, 1e-7], [1.00001e10,1e-8]))
+print(np.allclose([1e10, 1e-8], [1.00001e10,1e-9]))
+print(np.allclose([1e10, 1e-8], [1.0001e10,1e-9]))
 
 
 # ######  END of QUESTION 2    ###   END of QUESTION 2   ##########
@@ -137,7 +139,8 @@ print(nparray2c is nparray2)
 # ######  QUESTION 3      QUESTION 3      QUESTION 3   ##########
 # Write NumPy code to reverse (flip) an array (first element becomes last).
 x = np.arange(12, 38)
-
+x = np.flip(x)
+print(x)
 
 # ######  END of QUESTION 3    ###   END of QUESTION 3   ##########
 
@@ -151,6 +154,9 @@ x = np.arange(12, 38)
 # This way, when the array is finalized and printe out, it looks like 
 # a square boundary with ones, and all zeros inside. 
 # ----------------------------------------------------------------
+ones = np.ones((7, 7))
+ones[1:-1, 1:-1] = 0
+print(ones)
 
 
 # ######  END of QUESTION 4    ###   END of QUESTION 4   ##########
@@ -167,9 +173,12 @@ print(myarray)
 # 
 # a) Obtain a boolean matrix of the same dimension, indicating if 
 # the value is divisible by 7. 
-
+divisible = myarray % 7 == 0
+print(divisible)
 
 # b) Next get the list/array of those values of multiples of 7 in that original array  
+list_seven = myarray[divisible]
+print(list_seven)
 
 # ######  END of QUESTION 5    ###   END of QUESTION 5   ##########
 
@@ -196,6 +205,8 @@ print(flatlist)
 #
 # write your codes here
 #
+nparray1 = np.array(flatlist)
+print('nparray1:\n', nparray1)
 
 #%%
 # 6.2) reshape nparray1 into a 3x8 numpy array, call it nparray2
@@ -203,20 +214,26 @@ print(flatlist)
 #
 # write your codes here
 #
+nparray2 = nparray1.reshape(3, 8)
+print('nparray2:\n', nparray2)
 
 #%%
 # 6.3) swap columns 0 and 2 of nparray2, and call it nparray3
 # remember to print the result
 #
 # write your codes here
-#
+nparray3 = np.copy(nparray2)
+nparray3[:, [0, 2]] = nparray3[:, [2, 0]]
+print('nparray3:\n', nparray3)
 
 #%%
 # 6.4) swap rows 0 and 1 of nparray3, and call it nparray4
 # remember to print the result
 #
 # write your codes here
-#
+nparray4 = np.copy(nparray3)
+nparray4[[0, 1],:] = nparray4[[1, 0],:]
+print('nparray4:\n', nparray4)
 
 #%%
 # 6.5) reshape nparray4 into a 2x3x4 numpy array, call it nparray3D
@@ -224,6 +241,8 @@ print(flatlist)
 #
 # write your codes here
 #
+nparray3D = nparray4.reshape((2, 3, 4),)
+print('nparray3D:\n', nparray3D)
 
 #%%
 # 6.6) from nparray3D, create a numpy array with boolean values True/False, whether 
@@ -231,7 +250,8 @@ print(flatlist)
 # remember to print the result
 # 
 # write your codes here
-#
+nparray5 = nparray3D % 3 == 0
+print('nparray5:\n', nparray5)
 
 #%%
 # 6.7) from nparray5 and nparray3D, filter out the elements that are divisible 
@@ -239,7 +259,9 @@ print(flatlist)
 # remember to print the result
 #
 # write your codes here
-#
+nparray6a = nparray3D[nparray5]
+print('nparray6a:\n', nparray6a)
+print('shape: ', nparray6a.shape)
 
 #%%
 # 6.8) Instead of getting a flat array structure, can you try to perform the filtering 
@@ -249,7 +271,9 @@ print(flatlist)
 # remember to print the result
 # 
 # write your codes here
-#
+nparray6b = np.where(nparray5, nparray3D, 0)
+print('nparray6b:\n', nparray6b)
+print('shape: ', nparray6b.shape)
 # 
 # ######  END of QUESTION 6    ###   END of QUESTION 6   ##########
 
