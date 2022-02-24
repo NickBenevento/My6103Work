@@ -214,9 +214,6 @@ class Stock:
     #
     # Fill in the codes here 
     #
-    print('date: ', newdate)
-    print('price: ', newprice)
-    print('newvolume: ', newvolume)
     # insert newdate to dates[]
     self.dates.insert(0, newdate)
     # insert new eod data value to price_eod
@@ -226,7 +223,7 @@ class Stock:
     # calculate and insert new data to delta1
     self.delta1.insert(0, newprice - self.price_eod[1])
     # calculate and insert new data to delta2
-    self.delta2.insert(0, self.delta2[0] - self.delta1[0])
+    self.delta2.insert(0, self.delta1[0] - self.delta1[1])
     #
     #  ######  END QUESTION 3 ######  END QUESTION 3 ######  END QUESTION 3 ######  END QUESTION 3 ######  
 
@@ -294,6 +291,10 @@ print('Changes in last 600 days:')
 aapl.nday_change_percent(600)
 msft.nday_change_percent(600)
 goog.nday_change_percent(600)
+
+# Google performed the best in the past 50 days, Microsoft perfromed the best in the past 200 days, and 
+# Microsoft also performed the best in teh past 600 days.
+
 #  ######  END QUESTION 6 ######  END QUESTION 6 ######  END QUESTION 6 ######  END QUESTION 6 ######  
 
 
