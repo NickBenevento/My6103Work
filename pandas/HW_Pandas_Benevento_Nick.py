@@ -264,6 +264,7 @@ for col in dats.columns:
 # ######  QUESTION 10      QUESTION 10      QUESTION 10   ##########
 
 # write your codes here
+dats['HWavg'] = dats.iloc[:, 0:8].mean(axis=1)
 
 # ######  END of QUESTION 10    ###   END of QUESTION 10   ##########
 
@@ -277,6 +278,13 @@ dats.head() # check result
 # ######  QUESTION 11      QUESTION 11      QUESTION 11   ##########
 
 # write your codes here
+hw = dats.loc[:, 'HWavg'] * 0.3 * 10
+print('hw: ', hw)
+q1 = dats.loc[:, 'Q1'] * 0.1
+q2 = dats.loc[:, 'Q2'] * 0.15
+p1 = dats.loc[:, 'Proj1'] * 0.2
+p2 = dats.loc[:, 'Proj2'] * 0.25
+dats['total'] = hw + q1 + q2 + p1 + p2
 
 # ######  END of QUESTION 11    ###   END of QUESTION 11   ##########
 
@@ -288,8 +296,11 @@ dats.head() # check result
 # ######  QUESTION 12      QUESTION 12      QUESTION 12   ##########
 
 # write your codes here
+# calculate the average class grade
+print('Average class grade: ', round(dats.loc[:, 'total'].mean(), 2))
 
 # ######  END of QUESTION 12    ###   END of QUESTION 12   ##########
+
 
 #%%
 # Save out your dataframe as a csv file
@@ -298,6 +309,7 @@ dats.head() # check result
 # ######  QUESTION 13      QUESTION 13      QUESTION 13   ##########
 
 # write your codes here
+dats.to_csv('dats_df', sep=',')
 
 # ######  END of QUESTION 13    ###   END of QUESTION 13   ##########
 
@@ -317,8 +329,28 @@ def find_grade(total):
 
   # copy your codes here, either from your Week03 hw, or the solution file
 
+  if total < 60:
+   return 'F'
+  elif total < 70:
+   return 'D' 
+  elif total < 73:
+   return 'C-' 
+  elif total < 77:
+    return 'C' 
+  elif total < 80:
+    return 'C+' 
+  elif total < 83:
+    return 'B-' 
+  elif total < 87:
+    return 'B' 
+  elif total < 90:
+    return 'B+' 
+  elif total < 93:
+    return 'A-'
+  else:
+    return 'A'
+
   # ######  END of QUESTION 14    ###   END of QUESTION 14   ##########
-  return # grade  
 
 #%%
 # Let us create one more column for the letter grade, just call it grade.
@@ -327,8 +359,10 @@ def find_grade(total):
 # ######  QUESTION 15      QUESTION 15      QUESTION 15   ##########
 
 # write your code using the .apply() function to obtaine a new column of letter grade (call that new column 'grade') from the total.
+dats['grade'] = dats.loc[:, 'total'].apply(find_grade)
 
 # ######  END of QUESTION 15    ###   END of QUESTION 15   ##########
+dats.head()
 
 
 #%%
@@ -339,6 +373,8 @@ def find_grade(total):
 # ######  QUESTION 16      QUESTION 16      QUESTION 16   ##########
 
 # write your codes here
+plot = dats.loc[:, 'grade'].value_counts().plot(kind='bar')
+plot.get_figure().savefig('grade_bar.png')
 
 # ######  END of QUESTION 16    ###   END of QUESTION 16   ##########
 
