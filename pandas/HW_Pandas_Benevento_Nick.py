@@ -30,12 +30,13 @@ print("\nReady to continue.")
 
 # What are the variables in the df? 
 print(dfaapl.head())
-print()
+print('Variables: ', dfaapl.columns)
 # The variables are the price and volume, with the name for each row indicated by the date.
 
 # What are the data types for these variables?
-print("price dtype: ", dfaapl.price.dtype)
-print("volume dtype: ", dfaapl.volume.dtype)
+for i, col in enumerate(dfaapl.columns):
+  var = dfaapl.iloc[:, i]
+  print(f'{col} data type: {var.dtype}')
 # The price is of type float, and the volume is of type int. The names (or dates) are strings
 
 # ######  END of QUESTION 1    ###   END of QUESTION 1   ##########
@@ -236,6 +237,11 @@ dm.dfChk(dats)
 # What are the variables in the df? 
 # What are the data types for these variables?
 #
+print('Variables: ', dats.columns)
+for i, col in enumerate(dats.columns):
+  var = dats.iloc[:, i]
+  print(f'{col} data type: {var.dtype}')
+
 # The file has grades for a DATS class. Eight homeworks (out of 10 each), 2 quizzes (out of 100 each), and 2 projects (out of 100 each)
 # Find out the class average for each item (HW, quiz, project)
 # Hint, use .mean() function of pandas dataframe
@@ -243,6 +249,10 @@ dm.dfChk(dats)
 # ######  QUESTION 9      QUESTION 9      QUESTION 9   ##########
 
 # write your codes here
+for col in dats.columns:
+  average = dats.loc[:, col].mean()
+  print(f'{col} average: {round(average, 2)}')
+
 
 # ######  END of QUESTION 9    ###   END of QUESTION 9   ##########
 
