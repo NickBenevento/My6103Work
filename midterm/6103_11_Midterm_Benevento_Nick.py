@@ -50,11 +50,19 @@ print("\nReady to continue.")
 #%%
 # ideas:
 
+# The general principles I will be looking at to determine whether or not the world is a utopia
+# mainly deal with equality across genders/ethnicities, distribution of education and income,
+# and otherwise happiness, mainly denoted through divorce rates. I do believe in capitolism, as I 
+# feel that innovation and hard work should be rewarded. However, in a perfect world there isn't an uber
+# rich upper class that overshadows a lot of people living in poverty. So, I will also try to look at the
+# distribution of incomes to see if a disproportionate amount of people are living in the lower class.
+
 # income distribution vs ethnicity --> is 1 group making more than the others?
 # same as above but for men vs women
 # divorce rates
 # distribution of income --> a lot in poverty? is top 1% making way more?
 
+# ------------ WORLD 1 --------------------
 #%%
 # GENDER INCOME
 men = world1[world1.gender == 1]
@@ -66,14 +74,25 @@ w_med = women.loc[:, 'income00'].median()
 
 width = 0.25
 ind = np.arange(2)
-fig = plt.figure()
-plt.bar(ind, (m_avg, m_med), width, label='Men')
-plt.bar(ind + width, (w_avg, w_med), width, label='Women')
+fig, ax = plt.subplots()
+p1 = plt.bar(ind, (m_avg, m_med), width, label='Men')
+p2 = plt.bar(ind + width, (w_avg, w_med), width, label='Women')
 plt.xticks(ind + width / 2, ('Average Income', 'Median Income'))
+ax.bar_label(p1)
+ax.bar_label(p2)
+plt.margins(y=0.25)
 plt.ylabel('Income ($)')
 plt.title('Men vs. Women Income')
 plt.legend(loc='upper center')
 plt.savefig('world1_men_women_income')
+print(m_avg)
+print(w_avg)
+print(m_avg - w_avg)
+print(m_med - w_med)
+
+# In the first world, we can see that men make significantly more on average than women do: about $10,818.
+# The median income for men is also $12,430 more than the median income for women. This is an indication
+# of inequality between the pay for men and women, which is not something that is desired in a utopia.
 
 
 #%%
@@ -108,9 +127,22 @@ plt.title('Income Across Ethnicities')
 
 plt.savefig('world1_ethnicity_income')
 
+
+print(e3_med - e1_med)
+print(e3_med - e2_med)
+
+# Looking at the mean and median income across ethnicities, we can see that ethnicity 1 and ethnicity 2 are
+# fairly similar, with a difference of only $3,820 in the mean income and $3,025 in the median income.
+# However, residents that are of ethnicity 3 make significantly more than those of ethnicity 1 or 2. 
+# We can see that those of ethnicity 3 make $15,221 more on average than those of ethnicity 1, and $19,0424
+# more than those of ethnicity 2. In terms of median income, they make $17,135 more than ethnicity 1 people
+# and $20,160 more than ethnicity 2 people. These are alarming differences, as they seem to indicate that
+# people of one ethnicity have much higher incomes than everyone else. While this could be attributed to other
+# external factors, going based on the available data, it is a red flag that not everyone in this population is
+# treated equally.
+
 #%%
 # DIVORCE RATES
-# all_marriages = world1[world1.marital >= 1]
 all_marriages = world1[world1.marital.isin([1, 2, 3])]
 print('all marriages: ', len(all_marriages))
 divorce = len(all_marriages[all_marriages.marital == 2])
@@ -118,6 +150,13 @@ print('divorce: ', divorce)
 print('divorce rate: ', divorce / len(all_marriages))
 
 
+# While divorce rates are not a perfect way of determining how happy a population is, a lower divorce rate 
+# generally indicates that the couples in the relationship are more happy and more likely to stay together.
+# Since people may get divorced for a variety of reasons, divorce is not always a bad thing, but helps give some
+# insight into the population. Of the people in world 1 who were married at one point, about 14.6% of them
+# got divorced. Comparing this to the fact that almost 50% of all marriages in the United States end in 
+# divorce or separation, this is a very reasonable figure that could indicate people are generally 
+# happier in this population.
 #%%
 # education:
 
@@ -138,11 +177,29 @@ plot.get_figure().savefig('world1_income.png')
 #%%
 # plot = world1.loc[:, 'education'].value_counts().plot(kind='bar')
 # plot = world1.loc[:, 'education'].value_counts(ascending=True).plot(kind='bar')
-plot = world2.loc[:, 'education'].value_counts().sort_index().plot(kind='bar')
-plot.get_figure().savefig('world2_income.png')
+plot = world1.loc[:, 'education'].value_counts().sort_index().plot(kind='bar')
+plot.get_figure().savefig('world1_education.png')
+plt.title('Education Distribution')
+plt.xlabel('Years of Education')
+plt.ylabel('Number of People')
+
+average_education = world1.loc[:, 'education'].mean()
+mode_education = world1.mode()['education'][0]
+print('Average education: ', average_education)
+print('Most common education: ', mode_education)
+
+# Looking at the years of education across the population, we can see that the majority of the people
+# have over 11 years of schooling. The average education level is about 15 years, with most people having 16
+# years of education. This is a very educated population, which is in my opinion a great benefit to a society.
+# An educated population can better understand things like policy changes, scientific reasoning, etc.
+# Generally speaking, it also allows for better innovation and advancement of technology.
+
+# ------------ END WORLD 1 --------------------
+
+
+
+# ------------ WORLD 2 --------------------
 
 # %%
-# Education vs income
-plot = world1.plot(x='education', y='income00')
 
-# %%
+# ------------ END WORLD 2 --------------------
