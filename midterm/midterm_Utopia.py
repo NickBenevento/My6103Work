@@ -48,7 +48,6 @@ print("\nReady to continue.")
 #
 
 #%%
-
-#%%
 print(world1.head())
+print(world2.head())
 #%%
