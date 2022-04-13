@@ -9,10 +9,6 @@ plt.style.use('classic')
 # Part I
 titanic = dm.api_dsLand('Titanic', 'id')
 
-# Part II
-nfl = dm.api_dsLand('nfl2008_fga')
-nfl.dropna(inplace=True)
-
 #%% [markdown]
 
 # # Part I  
@@ -54,8 +50,12 @@ plt.title('Pie chart for Ticketclass')
 
 # %%
 # ### d. A single visualization chart that shows info of survival, age, pclass, and sex.
+# titanic.head()
+sns.set(style="white", palette="muted", color_codes=True)
+sns.pairplot(titanic[['survived', 'age', 'pclass', 'sex']], hue='survived')
 
 
+# %%
 # ## Question 2  
 # Build a logistic regression model for survival using the statsmodels library. As we did before, include the features that you find plausible. Make sure categorical variables are use properly. If the coefficient(s) turns out insignificant, drop it and re-build.  
 import statsmodels.api as sm
@@ -64,7 +64,7 @@ from statsmodels.formula.api import glm
 model_predictions = pd.DataFrame()
 
 print(titanic.head())
-formula = 'survived ~ C(pclass) + C(sex) + age + C(embarked)'
+formula = 'survived ~ C(pclass) + C(sex) + age'
 titanic_survival = glm(formula=formula, data=titanic, family=sm.families.Binomial())
 
 titanic_survival_fit = titanic_survival.fit()
@@ -74,31 +74,35 @@ model_predictions['survival'] = titanic_survival_fit.predict(titanic)
 # %%
 # ## Question 3  
 # Interpret your result. What are the factors and how do they affect the chance of survival (or the survival odds ratio)? What is the predicted probability of survival for a 30-year-old female with a second class ticket, no siblings, 3 parents/children on the trip? Use whatever variables that are relevant in your model.  
+# The pseudo R-square value is 0.3438, which in itself is not too promising for the model;
+# ideally we would like a higher r-squared value, as it would indicate that we could
+# better predict the chances of survival from just the data features. However, this does
+# make sense as there would be a lot of chance and other factors involved with surviving 
+# the titanic crash.
+
 # The deviance of the model was 486.06 (or negative two times Log-Likelihood-function)
 # df = 398 
-print(-2*titanic_survival_fit.llf)
+deviance = -2*titanic_survival_fit.llf
 # Compare to the null deviance
-print(titanic_survival_fit.null_deviance)
+null_deviance = titanic_survival_fit.null_deviance
+print('Difference between deviance and null deviance: ', (null_deviance - deviance))
+# difference = 369 with 4 variables. This would seem to indicate that the model is
+# fairly good, as there is a large difference with a small amount of variables (i.e. they are
+# significant)
 
-# test = np.array(['2', 'female', 30, 0, 3])
-# print(type(test))
-# test = pd.DataFrame(pclass='2', sex='female', 30, 0, 3)
-# test = pd.DataFrame(columns=['pclass', 'sex', 'age', 'sibsp', 'parch', 'ticket', 'fare', 'embarked'],
-#                     data=[2, 'female', 30, 0, 3, 123, 10, 'S'])
-test = titanic.iloc[0].copy()
-test['sex'] = 'female'
-test['age'] = 30
-test['sibsp'] = 0
-test['parch'] = 3
+#                      coef    std err          z      P>|z|      [0.025      0.975]
+# ----------------------------------------------------------------------------------
+# Intercept          2.8255      0.286      9.864      0.000       2.264       3.387
+# C(pclass)[T.2]    -0.9289      0.248     -3.743      0.000      -1.415      -0.442
+# C(pclass)[T.3]    -2.1722      0.236     -9.214      0.000      -2.634      -1.710
+# C(sex)[T.male]    -2.6291      0.185    -14.212      0.000      -2.992      -2.267
+# age               -0.0161      0.005     -3.018      0.003      -0.027      -0.006
+# ==================================================================================
 
-print(titanic_survival.predict(test))
-# 499.98  # df = 399 
-# A decrease of 14 with just one variable. That's not bad. 
+# The most important factors seems to be sex (being male decreases chance of survival),
+# and the pclass (pclass of 3 has lower chance of survival).
+
 # 
-# Another way to use the deviance value is to check the chi-sq p-value like this:
-# Null model: chi-sq of 399.98, df = 399, the p-value is 0.000428 (can use scipy.stats.chisquare function) 
-# Our model: chi-sq of 486.06, df = 398, the p-value is 0.001641
-# These small p-values (less than 0.05, or 5%) means reject the null hypothesis, which means the model is not a good fit with data. We want higher p-value here. Nonetheless, the one-variable model is a lot better than the null model.
 
 # %%
 # ## Question 4  
@@ -150,6 +154,10 @@ for cut_off in cut_offs:
 # | Missed | If the kick misses the mark | either Missed |  
 # | Blocked | If the kick is blocked by the defense | or blocked |  
 # 
+# Part II
+nfl = dm.api_dsLand('nfl2008_fga')
+nfl.dropna(inplace=True)
+
 #%% 
 # ## Question 5  
 # With the nfl dataset, perform some summary visualizations.  
@@ -230,5 +238,3 @@ print('Away team accuracy: ', test[:, 1].mean())
 # I found that away teams have a slightly higher chance of making a field goal, at about 89.21% (instead 
 # of the 84.97% for home teams)
 
-
-# %%
