@@ -55,18 +55,16 @@ plt.title('Pie chart for Ticketclass')
 # %%
 # ### d. A single visualization chart that shows info of survival, age, pclass, and sex.
 
+
 # ## Question 2  
 # Build a logistic regression model for survival using the statsmodels library. As we did before, include the features that you find plausible. Make sure categorical variables are use properly. If the coefficient(s) turns out insignificant, drop it and re-build.  
-import statsmodels.api as sm  # Importing statsmodels
+import statsmodels.api as sm
 from statsmodels.formula.api import glm
 
 model_predictions = pd.DataFrame()
 
 print(titanic.head())
-# formula = 'survived ~ pclass + sex + age'
-# formula = 'survived ~ pclass + C(sex) + C(embarked)'
-# formula = 'survived ~ pclass + C(sex) + sibsp + parch + fare'
-formula = 'survived ~ C(pclass) + C(sex) + fare + age + C(embarked)'
+formula = 'survived ~ C(pclass) + C(sex) + age + C(embarked)'
 titanic_survival = glm(formula=formula, data=titanic, family=sm.families.Binomial())
 
 titanic_survival_fit = titanic_survival.fit()
@@ -134,7 +132,6 @@ for cut_off in cut_offs:
     print('recall: ', round(recall, 3))
     print()
 
-
 #%%[markdown]
 # # Part II  
 # NFL field goal dataset - SciKitLearn
@@ -156,11 +153,26 @@ for cut_off in cut_offs:
 #%% 
 # ## Question 5  
 # With the nfl dataset, perform some summary visualizations.  
-nfl.head()
-# print(nfl.columns)
-# for col in nfl.columns:
-#     print(nfl[col].unique())
-# print(nfl)
+under_60 = nfl[nfl['timerem'] < 60]['GOOD'].value_counts()
+over_60 = nfl[nfl['timerem'] > 60]['GOOD'].value_counts()
+
+print('Percentage of kicks made with less than 60 seconds left in the game: ', 
+      round(under_60[1] / (under_60[1] + under_60[0]), 3))
+print('Percentage of kicks made with more than 60 seconds left in the game: ', 
+      round(over_60[1] / (over_60[1] + over_60[0]), 3))
+
+# %%
+plt.title('Kicks made at home versus away')
+sns.histplot(data=nfl, x='homekick', hue='GOOD', multiple='dodge', shrink=0.8)
+
+# %%
+plt.title('Kicks made in each quarter')
+sns.histplot(data=nfl, x='qtr', hue='GOOD', multiple='dodge', shrink=0.8)
+
+# %%
+plt.title('Kicks made over distance')
+sns.lineplot(data=nfl, x='distance', y='GOOD', linewidth=2.5)
+
 
 # %%
 # 
@@ -169,19 +181,22 @@ nfl.head()
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
-# x_df = nfl.drop('GOOD', axis=1)
-x_df = nfl[['qtr', 'distance', 'homekick', 'timerem']]
-# x_df = nfl[['qtr', 'distance', 'homekick', 'timerem', 'Missed']]
-# x_df = nfl[['Missed']]
+x_df = nfl[['qtr', 'distance', 'homekick', 'offscore', 'timerem']]
 y_df = nfl[['GOOD']]
 
-dietLogit = LogisticRegression(max_iter=10000)  # instantiate
+dietLogit = LogisticRegression()  # instantiate
 x_trainDiet, x_testDiet, y_trainDiet, y_testDiet = train_test_split(x_df, y_df, random_state=1234 )
 dietLogit.fit(x_trainDiet, y_trainDiet.values.ravel())
 print('Logit model accuracy (with the test set):', dietLogit.score(x_testDiet, y_testDiet))
 print('Logit model accuracy (with the train set):', dietLogit.score(x_trainDiet, y_trainDiet))
 
 print("\nReady to continue.")
+
+# The variables in my model are: the quarter the field goal was attempted, the distance
+# it was attempted from, if the kick was at home or not, the offense score, and the time 
+# remaining on the clock.
+# The 'Missed' and 'Blocked' column felt like cheating, because combined they can indicate with
+# 100% accuracy if the kick was good or not, so these features were ommitted.
 
 # %%
 # 
@@ -192,26 +207,28 @@ home = nfl[nfl.homekick == 1]
 x_home = home[['qtr', 'distance', 'timerem']]
 y_home = home[['GOOD']]
 
-homeLogit = LogisticRegression(max_iter=10000)  # instantiate
+homeLogit = LogisticRegression()  # instantiate
 x_trainDiet, x_testDiet, y_trainDiet, y_testDiet = train_test_split(x_home, y_home, random_state=1234 )
 homeLogit.fit(x_trainDiet, y_trainDiet.values.ravel())
 test = homeLogit.predict_proba(x_testDiet)
-print(test[:, 1].mean())
+print('home team accuracy: ', test[:, 1].mean())
 
 
 away = nfl[nfl.homekick == 0]
 x_away = away[['qtr', 'distance', 'timerem']]
 y_away = away[['GOOD']]
 
-awayLogit = LogisticRegression(max_iter=10000)  # instantiate
+awayLogit = LogisticRegression()  # instantiate
 x_trainDiet, x_testDiet, y_trainDiet, y_testDiet = train_test_split(x_away, y_away, random_state=1234 )
 awayLogit.fit(x_trainDiet, y_trainDiet.values.ravel())
 test = awayLogit.predict_proba(x_testDiet)
-print(test[:, 1].mean())
+print('Away team accuracy: ', test[:, 1].mean())
 
 # ## Question 8    
 # From what you found, do home teams and road teams have different chances of making a successful field goal? If one does, is that true for all distances, or only with a certain range?
 # 
+# I found that away teams have a slightly higher chance of making a field goal, at about 89.21% (instead 
+# of the 84.97% for home teams)
 
 
 # %%
