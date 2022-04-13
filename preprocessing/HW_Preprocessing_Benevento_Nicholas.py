@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import dm6103 as dm
+import seaborn as sns
 plt.style.use('classic')
 
 # The dataset is obtained from 
@@ -101,10 +102,16 @@ print("\nReady to continue.")
 
 # Now apply to df row-wise. 
 # Here with two arguments in the function, we use this syntax
+
 print(dfhappy.head())
 print(dfhappy.income.unique())
 dfhappy['income'] = dfhappy.apply(cleanDfIncome, colname='income', axis=1)
 print(dfhappy.head())
+
+sns.set(style="whitegrid")
+sns.distplot(x=dfhappy['income'], kde = False)
+plt.show()
+
 
 
 # ----------- PLOTS --------------
