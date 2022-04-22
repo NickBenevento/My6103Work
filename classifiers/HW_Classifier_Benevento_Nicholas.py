@@ -161,7 +161,7 @@ print("\nReady to continue.")
 
 # %%
 # Logistic Regression
-regression = LogisticRegression(max_iter=10000)
+regression = LogisticRegression()
 regression.fit(x_train, y_train.values.ravel())
 print(f'Logistic regression train score:  {regression.score(x_train,y_train)}')
 print(f'Logistic regression test score:  {regression.score(x_test,y_test)}')
@@ -181,12 +181,12 @@ print("\nReady to continue.")
 
 # %%
 # Decision tree
-dtree_admit1 = DecisionTreeClassifier(max_depth=20, random_state=1)
+dtree = DecisionTreeClassifier(max_depth=20, random_state=1)
 # Fit dt to the training set
-dtree_admit1.fit(x_train, y_train.values.ravel())
+dtree.fit(x_train, y_train.values.ravel())
 # Predict test set labels
-y_train_pred = dtree_admit1.predict(x_train)
-y_test_pred = dtree_admit1.predict(x_test)
+y_train_pred = dtree.predict(x_train)
+y_test_pred = dtree.predict(x_test)
 # Evaluate test-set accuracy
 print(f'Decision tree train score:  {accuracy_score(y_train, y_train_pred)}')
 print(f'Decision tree test score:  {accuracy_score(y_test, y_test_pred)}')
@@ -204,13 +204,30 @@ print(classification_report(y_test, y_test_pred))
 # NOTE: You might want to temporarily disable auto sleep/hibernation of your computer.
 nmax = 2000 # nmax = 10000 # or other smaller values if your system resource is limited.
 cvdigits = digits.iloc[0:nmax,:]
-X_cv = cvdigits.iloc[:,1:785] # 28x28 pixels = 784, so index run from 1 to 784 # remember that pandas iloc function like regular python slicing, do not include end number
-print("cvdigits shape: ",cvdigits.shape)
-print("X_cv shape: ",X_cv.shape)
+x_cv = cvdigits.iloc[:,1:785] # 28x28 pixels = 784, so index run from 1 to 784 # remember that pandas iloc function like regular python slicing, do not include end number
+print("cvdigits shape: ", cvdigits.shape)
+print("X_cv shape: ", x_cv.shape)
 y_cv = cvdigits.iloc[:,0]
 
+svc_cv_acc = cross_val_score(svc, x_cv, y_cv, cv= 10, scoring='accuracy' )
+print('svc cross validation: ', svc_cv_acc)
+
+lin_svc_cv_acc = cross_val_score(lin_svc, x_cv, y_cv, cv= 10, scoring='accuracy' )
+print('Linear svc cross validation: ', lin_svc_cv_acc)
+
+regression_cv_acc = cross_val_score(regression, x_cv, y_cv, cv= 10, scoring='accuracy' )
+print('logistic regression cross validation: ', regression_cv_acc)
+
+knn_cv_acc = cross_val_score(knn, x_cv, y_cv, cv= 10, scoring='accuracy' )
+print('KNN cross validation: ', knn_cv_acc)
+
+tree_cv_acc = cross_val_score(dtree, x_cv, y_cv, cv= 10, scoring='accuracy' )
+print('Decision tree cross validation: ', tree_cv_acc)
+# %%
 # Logit Regression 
-%timeit -r 1 print(f'\nLR CV accuracy score: { cross_val_score(lr, X_cv, y_cv, cv= 10, scoring="accuracy", n_jobs = -1) }\n')   
+%timeit -r 1 print(f'\nLR CV accuracy score: { cross_val_score(regression, X_cv, y_cv, cv= 10, scoring="accuracy", n_jobs = -1) }\n')   
+# 4.14s
+
 # the flag -r 1 is to tell timeit to repeat only 1 time to find the average time. The default is to repeat 7 times.
 # I get something like below
 # without n_jobs, quit: STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
@@ -229,5 +246,20 @@ y_cv = cvdigits.iloc[:,0]
 # It is EIGHT times slower than before. The GPGPU is occupied with other tasks, and unable to 
 # to dedicate on the task at hand.
 
+# %%
+%timeit -r 1 print(f'\nSVM CV accuracy score: { cross_val_score(svc, X_cv, y_cv, cv= 10, scoring="accuracy", n_jobs = -1) }\n')   
+# 5.94s
+# %%
+%timeit -r 1 print(f'\nLinear SVM CV accuracy score: { cross_val_score(lin_svc, X_cv, y_cv, cv= 10, scoring="accuracy", n_jobs = -1) }\n')   
+# 3.56s
+# %%
+%timeit -r 1 print(f'\nKNN CV accuracy score: { cross_val_score(knn, X_cv, y_cv, cv= 10, scoring="accuracy", n_jobs = -1) }\n')   
+# .435s
+# %%
+%timeit -r 1 print(f'\nDecision tree CV accuracy score: { cross_val_score(dtree, X_cv, y_cv, cv= 10, scoring="accuracy", n_jobs = -1) }\n')   
+# 1.26s
 
+# The regular SVM was the slowest at 5.94s; the knn was the fastest,
+# 0.435s. This was a little surprising to me, as I expected the knn
+# to be slower; I thought the LR would be the fastest.
 # %%
