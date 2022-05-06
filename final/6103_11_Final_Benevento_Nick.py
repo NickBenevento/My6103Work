@@ -12,8 +12,6 @@ world2 = dm.api_dsLand('World2', 'id')
 
 print("\nReady to continue.")
 
-#%%
-world2.head()
 #%% [markdown]
 # # Two Worlds (Continuation from midterm: Part I - 25%)
 # 
@@ -46,13 +44,95 @@ world2.head()
 #   7. finance   
 # 
 # %%
-# world1.head()
-# features = [['age00', 'education', 'marital', 'gender', 'ethnic', 'income00', 'industry']]
-features = [['age00', 'education', 'marital', 'gender', 'ethnic', 'industry']]
-y = [['income00']]
+# World 1: 
+from statsmodels.formula.api import ols
+import statsmodels.api as sm
 
+formula = 'income00 ~ age00 + education + C(marital) + C(gender) + C(ethnic) + C(industry)'
 
+income = ols(formula=formula, data=world1, family=sm.families.Binomial())
 
+income_fit = income.fit()
+print(income_fit.summary())
+#                           OLS Regression Results                            
+# ==============================================================================
+# Dep. Variable:               income00   R-squared:                       0.848
+# Model:                            OLS   Adj. R-squared:                  0.848
+# Method:                 Least Squares   F-statistic:                     8908.
+# Date:                Fri, 06 May 2022   Prob (F-statistic):               0.00
+# Time:                        15:26:57   Log-Likelihood:            -2.5731e+05
+# No. Observations:               24000   AIC:                         5.147e+05
+# Df Residuals:                   23984   BIC:                         5.148e+05
+# Df Model:                          15                                         
+# Covariance Type:            nonrobust                                         
+# ====================================================================================
+#                        coef    std err          t      P>|t|      [0.025      0.975]
+# ------------------------------------------------------------------------------------
+# Intercept         2.866e+04    593.931     48.258      0.000    2.75e+04    2.98e+04
+# C(marital)[T.1]     -1.6473    158.002     -0.010      0.992    -311.341     308.046
+# C(marital)[T.2]   -240.2771    257.433     -0.933      0.351    -744.862     264.308
+# C(marital)[T.3]   -263.4030    325.858     -0.808      0.419    -902.105     375.299
+# C(gender)[T.1]    -103.9987    152.672     -0.681      0.496    -403.245     195.248
+# C(ethnic)[T.1]      64.5741    175.292      0.368      0.713    -279.009     408.157
+# C(ethnic)[T.2]      51.4882    185.872      0.277      0.782    -312.833     415.809
+# C(industry)[T.1]  7772.7147    276.516     28.109      0.000    7230.726    8314.703
+# C(industry)[T.2]  1.733e+04    288.246     60.113      0.000    1.68e+04    1.79e+04
+# C(industry)[T.3]  2.489e+04    281.551     88.420      0.000    2.43e+04    2.54e+04
+# C(industry)[T.4]  3.388e+04    328.164    103.234      0.000    3.32e+04    3.45e+04
+# C(industry)[T.5]  3.971e+04    299.958    132.383      0.000    3.91e+04    4.03e+04
+# C(industry)[T.6]  6.656e+04    289.639    229.802      0.000     6.6e+04    6.71e+04
+# C(industry)[T.7]  8.518e+04    331.939    256.612      0.000    8.45e+04    8.58e+04
+# age00              -10.6400      8.567     -1.242      0.214     -27.432       6.152
+# education            9.1165     24.515      0.372      0.710     -38.935      57.168
+# ==============================================================================
+
+# %%
+# World 2:
+formula = 'income00 ~ age00 + education + C(marital) + C(gender) + C(ethnic) + C(industry)'
+
+income = ols(formula=formula, data=world2, family=sm.families.Binomial())
+
+income_fit = income.fit()
+print(income_fit.summary())
+# 
+#                             OLS Regression Results                            
+# ==============================================================================
+# Dep. Variable:               income00   R-squared:                       0.846
+# Model:                            OLS   Adj. R-squared:                  0.846
+# Method:                 Least Squares   F-statistic:                     8779.
+# Date:                Fri, 06 May 2022   Prob (F-statistic):               0.00
+# Time:                        15:31:23   Log-Likelihood:            -2.5754e+05
+# No. Observations:               24000   AIC:                         5.151e+05
+# Df Residuals:                   23984   BIC:                         5.152e+05
+# Df Model:                          15                                         
+# Covariance Type:            nonrobust                                         
+# ====================================================================================
+#                        coef    std err          t      P>|t|      [0.025      0.975]
+# ------------------------------------------------------------------------------------
+# Intercept          2.96e+04    602.971     49.087      0.000    2.84e+04    3.08e+04
+# C(marital)[T.1]    -50.7526    159.835     -0.318      0.751    -364.039     262.534
+# C(marital)[T.2]    -48.9602    263.130     -0.186      0.852    -564.711     466.790
+# C(marital)[T.3]   -409.4943    323.993     -1.264      0.206   -1044.541     225.552
+# C(gender)[T.1]     -98.6305    144.511     -0.683      0.495    -381.881     184.620
+# C(ethnic)[T.1]    -167.5269    175.056     -0.957      0.339    -510.648     175.595
+# C(ethnic)[T.2]    -143.9631    175.248     -0.821      0.411    -487.460     199.533
+# C(industry)[T.1]  7596.3002    278.871     27.239      0.000    7049.696    8142.905
+# C(industry)[T.2]  1.722e+04    289.561     59.462      0.000    1.67e+04    1.78e+04
+# C(industry)[T.3]  2.446e+04    281.027     87.043      0.000    2.39e+04     2.5e+04
+# C(industry)[T.4]  3.413e+04    318.573    107.131      0.000    3.35e+04    3.48e+04
+# C(industry)[T.5]  4.009e+04    293.799    136.459      0.000    3.95e+04    4.07e+04
+# C(industry)[T.6]  6.619e+04    279.988    236.401      0.000    6.56e+04    6.67e+04
+# C(industry)[T.7]  8.515e+04    323.875    262.916      0.000    8.45e+04    8.58e+04
+# age00               -4.1694      8.664     -0.481      0.630     -21.152      12.813
+# education          -64.8592     25.273     -2.566      0.010    -114.396     -15.322
+# ==============================================================================
+
+# %%
+# As we can see from the above two feature coefficients, there are differences between the 
+# worlds in what has an impact on income. In world 1, there are two ethnicities that have a large
+# effect on income: C(ethnic)[T.1] = 64.5741, C(ethnic)[T.2] = 51.4882. However, in world 2, these 
+# same ethnicites do not have a positive effect on predicting income. This is one indication that
+# world1 is more biased, and generally not considered a utopia.
 
 #%% [markdown]
 #
@@ -215,7 +295,7 @@ class myModel:
 
     for i in range(n):
       # update the income and age of the person
-      person.update({'income': self.predictIncome(person), 'age': person['age'] + 1/12})
+      person.update({'income': self.predictIncome(person), 'age': person['age'] + n/12})
       # prediction.update({'income': self.predictIncome(prediction), 'age': prediction['age'] + 1/12})
     # return prediction['income']
     return person['income']
@@ -261,6 +341,33 @@ print(f'bias aristotel predicted income after 12 months: {biasModel.predictFinal
 
 print("\nReady to continue.")
 
+# %%
+# John, a single male, finance major
+john = Person( { "age": 30, "education": 15, "gender": 1, "marital": 0, "ethnic": 0, "industry": 7, "income": 120000 } )
+print(f'John bias growth: {biasModel.predictGrowthFactor(john)}') # This is the current growth factor for aristotle
+print(f'John bias predicted income after 12 months: {biasModel.predictFinalIncome(months, john)}')
+john = Person( { "age": 30, "education": 15, "gender": 1, "marital": 0, "ethnic": 0, "industry": 7, "income": 120000 } )
+print(f'John utop growth: {utopModel.predictGrowthFactor(john)}') # This is the current growth factor for aristotle
+print(f'John utop predicted income after 12 months: {utopModel.predictFinalIncome(months, john)}')
+# The bias model predicts an income of 124370.92, while the utop model predicts 124594.30
+
+# Mary, a married woman, education major
+mary = Person( { "age": 45, "education": 17, "gender": 0, "marital": 1, "ethnic": 1, "industry": 2, "income": 95000 } )
+print(f'Mary bias growth: {biasModel.predictGrowthFactor(mary)}') # This is the current growth factor for aristotle
+print(f'Mary bias predicted income after 12 months: {biasModel.predictFinalIncome(months, mary)}')
+mary = Person( { "age": 45, "education": 17, "gender": 0, "marital": 1, "ethnic": 1, "industry": 2, "income": 95000 } )
+print(f'Mary utop growth: {utopModel.predictGrowthFactor(mary)}') # This is the current growth factor for aristotle
+print(f'Mary utop predicted income after 12 months: {utopModel.predictFinalIncome(months, mary)}')
+# The bias model predicts and income of 98268.06, while the utop model predicts 99118.06
+
+# Joe, an older widower, manufactoring major
+joe = Person( { "age": 60, "education": 20, "gender": 1, "marital": 3, "ethnic": 2, "industry": 5, "income": 105000 } )
+print(f'Joe bias growth: {biasModel.predictGrowthFactor(joe)}') # This is the current growth factor for aristotle
+print(f'Joe bias predicted income after 12 months: {biasModel.predictFinalIncome(months, joe)}')
+joe = Person( { "age": 60, "education": 20, "gender": 1, "marital": 3, "ethnic": 2, "industry": 5, "income": 105000 } )
+print(f'Joe utop growth: {utopModel.predictGrowthFactor(joe)}') # This is the current growth factor for aristotle
+print(f'Joe utop predicted income after 12 months: {utopModel.predictFinalIncome(months, joe)}')
+# The bias model predicts and income of 111569.38, while the utop model predicts 110376.40
 
 #%% [markdown]
 # # Evolution (Part III - 25%)
@@ -333,12 +440,107 @@ revbiasModel = myModel( { "gender": -1, "ethnic": -1 } ) # revsered bias, to rig
 
 # If the current model cannot get the job done, feel free to tweak the model with more aggressive intervention to change the growth rate percentages on gender and ethnicity to make it work. 
 
-months = 360
+months = 1
+# Set equality threshold as $5,000
+equality_threshold = 5000
 # rename cols for person class instantiation
 world1 = world1.rename(columns={'income00': 'income', 'age00': 'age'})
+sex_equality = False
+ethnicity_equality = False
+
 # evolve the world
-for i, row in world2.iterrows():
-  world1.at[i, 'revbiasFinalIncome'] = revbiasModel.predictFinalIncome(months, Person(row))
+while months < 360:
+
+  for i, row in world1.iterrows():
+    world1.at[i, 'revbiasFinalIncome'] = revbiasModel.predictFinalIncome(months, Person(row))
+    # Update the person's age
+    world1.at[i, 'age'] = world1.at[i, 'age'] + 5/12
+  
+
+  income_male = world1[world1.gender == 1].loc[:, 'revbiasFinalIncome'].mean()
+  income_female = world1[world1.gender == 0].loc[:, 'revbiasFinalIncome'].mean()
+  if abs(income_male - income_female) < equality_threshold:
+    print(f'Male and female incomes equal at {months} months')
+    print('Average male income: ', income_male)
+    print('Average female income: ', income_female)
+    sex_equality = True
 
 
+  income_e0 = world1[world1.ethnic == 0].loc[:, 'revbiasFinalIncome'].mean()
+  income_e1 = world1[world1.ethnic == 1].loc[:, 'revbiasFinalIncome'].mean()
+  income_e2 = world1[world1.ethnic == 2].loc[:, 'revbiasFinalIncome'].mean()
+
+  if abs(income_e0 - income_e1) < equality_threshold \
+    and abs(income_e1 - income_e2) < equality_threshold \
+    and abs(income_e0 - income_e2) < equality_threshold:
+    print(f'Ethnicity incomes equal at {months} months')
+    print('Average ethnicity 0 income: ', income_e0)
+    print('Average ethnicity 1 income: ', income_e1)
+    print('Average ethnicity 2 income: ', income_e2)
+    ethnicity_equality = True
+
+  if sex_equality and ethnicity_equality:
+    break
+
+
+  months += 5
+
+# The male and female incomes were equal and stayed equal after around 175 months.
+# At 195 months, the average male income was 122239.16, and the 
+# average female income was 118856.56, with a difference of 3,382.56.
+# The incomes across the different ethnicities never became equal however, testing
+# a time frame of up to 30 years.
+
+# %%
+# Final gender income differences after 30 years
+men = world1[world1.gender == 1]
+m_avg = men.loc[:, 'revbiasFinalIncome'].mean()
+m_med = men.loc[:, 'revbiasFinalIncome'].median()
+women = world1[world1.gender == 0]
+w_avg = women.loc[:, 'revbiasFinalIncome'].mean()
+w_med = women.loc[:, 'revbiasFinalIncome'].median()
+
+width = 0.25
+ind = np.arange(2)
+fig, ax = plt.subplots()
+p1 = plt.bar(ind, (m_avg, m_med), width, label='Men')
+p2 = plt.bar(ind + width, (w_avg, w_med), width, label='Women')
+plt.xticks(ind + width / 2, ('Average Income', 'Median Income'))
+ax.bar_label(p1)
+ax.bar_label(p2)
+plt.margins(y=0.25)
+plt.ylabel('Income ($)')
+plt.title('Men vs. Women Income')
+plt.legend(loc='upper center')
+plt.savefig('world1_gender_income')
 #%%
+# Final ethnicity income differences after 30 years
+ethnicity1 = world1[world1.ethnic == 0]
+e1_avg = ethnicity1.loc[:, 'revbiasFinalIncome'].mean()
+e1_med = ethnicity1.loc[:, 'revbiasFinalIncome'].median()
+
+ethnicity2 = world1[world1.ethnic == 1]
+e2_avg = ethnicity2.loc[:, 'revbiasFinalIncome'].mean()
+e2_med = ethnicity2.loc[:, 'revbiasFinalIncome'].median()
+
+ethnicity3 = world1[world1.ethnic == 2]
+e3_avg = ethnicity3.loc[:, 'revbiasFinalIncome'].mean()
+e3_med = ethnicity3.loc[:, 'revbiasFinalIncome'].median()
+
+width = 0.2
+ind = np.arange(2)
+fig, ax = plt.subplots()
+p1 = plt.bar(ind, (e1_avg, e1_med), width, label='Ethnicity 1')
+p2 = plt.bar(ind + width, (e2_avg, e2_med), width, label='Ethnicity 2')
+p3 = plt.bar(ind + 2*width, (e3_avg, e3_med), width, label='Ethnicity 3')
+plt.xticks(ind + width, ('Average Income', 'Median Income'))
+ax.bar_label(p1)
+ax.bar_label(p2)
+ax.bar_label(p3)
+plt.margins(y=0.25)
+plt.ylabel('Income ($)')
+plt.legend(loc='upper center')
+plt.title('world1_ethnicity_income')
+
+plt.savefig('world1_ethnicity_income')
+# %%
